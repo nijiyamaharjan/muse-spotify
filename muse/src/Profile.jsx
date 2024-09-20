@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
-// const clientId = "1c36f767e20148c089bc411db8571932";
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
-const redirectUri = "http://localhost:5173/callback";
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -54,7 +51,7 @@ function Profile() {
           <a href={profile.external_urls.spotify}>Spotify Profile Link</a>
         </div>
       ) : (
-        <></>
+        <p>Profile Hidden</p>
       )}
     </>
   )
@@ -115,7 +112,9 @@ async function getAccessToken(clientId, code) {
         });
 
         if (!result.ok) {
-            throw new Error(`Token request failed: ${result.statusText}`);
+          console.log(result.statusText);
+          throw new Error(`Token request failed: ${result.statusText}`);
+            
         }
 
         const { access_token } = await result.json();
