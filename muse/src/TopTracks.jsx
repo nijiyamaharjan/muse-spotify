@@ -45,7 +45,7 @@ export default TopTracks;
 
 async function fetchTopTracks(token) {
     try {
-        const result = await fetch("https://api.spotify.com/v1/me/top/tracks?limit=50&offset=0", {
+        const result = await fetch("https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=50&offset=0", {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` }
         });
