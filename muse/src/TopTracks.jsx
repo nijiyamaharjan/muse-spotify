@@ -6,10 +6,40 @@ function TopTracks() {
     const [showTopTracks, setShowTopTracks] = useState(false);
     let accessToken = localStorage.getItem("access_token");
 
-    const handleShowTopTracks = async () => {
+    const handleShowTopTracks_1Year = async () => {
         if (!showTopTracks) {
             try {
-            const topTracks = await fetchTopTracks(accessToken);
+            const timeRange = 'long_term';
+            const limit = 50;
+            const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
+            setTopTracks(topTracks);
+          } catch (error) {
+            console.error("Cannot fetch top tracks", error);
+          }
+        }
+        setShowTopTracks(prevState => !prevState);
+    };
+
+    const handleShowTopTracks_6Months = async () => {
+        if (!showTopTracks) {
+            try {
+            const timeRange = 'medium_term';
+            const limit = 50;
+            const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
+            setTopTracks(topTracks);
+          } catch (error) {
+            console.error("Cannot fetch top tracks", error);
+          }
+        }
+        setShowTopTracks(prevState => !prevState);
+    };
+
+    const handleShowTopTracks_4Weeks = async () => {
+        if (!showTopTracks) {
+            try {
+            const timeRange = 'short_term';
+            const limit = 50;
+            const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
             setTopTracks(topTracks);
           } catch (error) {
             console.error("Cannot fetch top tracks", error);
@@ -20,12 +50,18 @@ function TopTracks() {
 
     return (
     <>
-      <Button variant="contained" onClick={handleShowTopTracks}>
+      <Button variant="contained" id="1Year" onClick={handleShowTopTracks_1Year}>
         {showTopTracks ? 'Hide Top Tracks 1 Year' : 'Show Top Tracks 1 Year'}
+      </Button>
+      <Button variant="contained" id="6Months" onClick={handleShowTopTracks_6Months}>
+        {showTopTracks ? 'Hide Top Tracks 6 Months' : 'Show Top Tracks 6 Months'}
+      </Button>
+      <Button variant="contained" id="4Weeks" onClick={handleShowTopTracks_4Weeks}>
+        {showTopTracks ? 'Hide Top Tracks 4 Weeks' : 'Show Top Tracks 4 Weeks'}
       </Button>
       {showTopTracks && topTracks ? (
         <div>
-          <h2>Top Tracks</h2>
+          {<h2>Top Tracks</h2>}
           <ol>
             {topTracks.map(track => (
               <li key={track.id}>
@@ -43,18 +79,15 @@ function TopTracks() {
 
 export default TopTracks;
 
-async function fetchTopTracks(token) {
+async function fetchTopTracks(token, timeRange, limit) {
     try {
-        const result = await fetch("https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=50&offset=0", {
+        const result = await fetch(`https://api.spotify.com/v1/me/top/tracks?time_range=${timeRange}&limit=${limit}&offset=0`, {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` }
         });
 
         if (!result.ok) {
             throw new Error(`Top tracks fetch failed: ${result.statusText}`);
-        } else 
-        {
-            console.log(result);
         }
 
         const data = await result.json();
