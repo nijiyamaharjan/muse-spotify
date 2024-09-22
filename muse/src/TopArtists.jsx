@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress'; 
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
@@ -49,7 +49,7 @@ function TopArtists() {
 
     const renderTopArtists = () => {
         if (loading) {
-            return <p>Loading...</p>;
+            return <CircularProgress />;
         }
 
         if (!topArtists || topArtists.length === 0) {
@@ -60,6 +60,9 @@ function TopArtists() {
             <ol>
                 {topArtists.map((artist, index) => (
                     <li key={index}>
+                        {artist.images && artist.images[0] && (
+                            <img src={artist.images[0].url} alt="Profile" width={60} />
+                        )}
                         {artist.name}
                     </li>
                 ))}

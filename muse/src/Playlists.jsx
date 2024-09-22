@@ -1,51 +1,55 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect } from 'react';
+import CircularProgress from '@mui/material/CircularProgress'; 
 
 function Playlists() {
     const [playlists, setPlaylists] = useState(null);
-    const [showPlaylists, setShowPlaylists] = useState(false);
-    const [selectedId, setSelectedId] = useState(null); // Added state for selected ID
+    const [showPlaylists, setShowPlaylists] = useState(true);
+    const [loading, setLoading] = useState(false);
     let accessToken = localStorage.getItem("access_token");
     let userId = localStorage.getItem("user_id");
 
     const handleShowPlaylists = async () => {
-        if (!showPlaylists) {
+        setLoading(true);
             try {
                 const limit = 50;
                 const fetchedPlaylists = await fetchPlaylists(accessToken, limit, userId);
                 setPlaylists(fetchedPlaylists);
             } catch (error) {
                 console.error("Cannot fetch playlists", error);
+            } finally {
+                setLoading(false);  // End loading
             }
-        }
-        setShowPlaylists(prevState => !prevState);
     };
 
+    useEffect(() => {
+        handleShowPlaylists();
+    }, []);
     return (
         <>
-            <Button variant="contained" id="playlists" onClick={handleShowPlaylists}>
-                {showPlaylists ? 'Hide Playlists' : 'Show Playlists'}
-            </Button>
+    {loading ? (
+        <CircularProgress />
+    ) : (
+        showPlaylists && playlists ? (
+            <div>
+                <h2>Playlists</h2>
+                {playlists.length > 0 ? (
+                    <ol>
+                        {playlists.map(playlist => (
+                            <li key={playlist.id}>
+                                {playlist.name} by {playlist.owner.display_name}
+                            </li>
+                        ))}
+                    </ol>
+                ) : (
+                    <p>No playlists found.</p>
+                )}
+            </div>
+        ) : (
+            <p>Playlists Hidden</p>
+        )
+    )}
+</>
 
-            {showPlaylists && playlists ? (
-                <div>
-                    <h2>Playlists</h2>
-                    {playlists.length > 0 ? (
-                        <ol>
-                            {playlists.map(playlist => (
-                                <li key={playlist.id}>
-                                    {playlist.name} by {playlist.owner.display_name}
-                                </li>
-                            ))}
-                        </ol>
-                    ) : (
-                        <p>No playlists found.</p>
-                    )}
-                </div>
-            ) : (
-                <p>Playlists Hidden</p>
-            )}
-        </>
     );
 }
 

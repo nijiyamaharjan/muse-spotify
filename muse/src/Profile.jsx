@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Playback from './Playback';
+import CircularProgress from '@mui/material/CircularProgress'; 
 
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
 
 function Profile() {
   // redirectToAuthCodeFlow(clientId);
   const [profile, setProfile] = useState(null);
-  const [showProfile, setShowProfile] = useState(false);
   const [access, setAccess] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleShowProfile = async () => {
     const params = new URLSearchParams(window.location.search);
@@ -33,6 +34,7 @@ function Profile() {
         redirectToAuthCodeFlow(clientId); // Restart auth flow
       }
     } else {
+      setLoading(true);
       // If token exists, use it to fetch profile
       try {
         const profile = await fetchProfile(accessToken);
@@ -41,7 +43,9 @@ function Profile() {
         console.error("Token expired or invalid:", error);
         localStorage.removeItem("access_token");
         redirectToAuthCodeFlow(clientId); // Restart auth flow
-      }
+      } finally {
+        setLoading(false);  // End loading
+    }
     }
     // setShowProfile(prevState => !prevState);
   };
@@ -52,26 +56,26 @@ function Profile() {
 
   return (
     <>
-      <h1>Muse</h1>
-      {/* <Button variant="contained" onClick={handleShowProfile}>{!showProfile? 'Show Profile': 'Hide Profile'}</Button> */}
-      
-      {profile? (
-        <div>
-          <h2>{profile.display_name}</h2>
-          {profile.images && profile.images[0] && (
-            <img src={profile.images[0].url} alt="Profile" width={200} />
-          )}
-          <p>Email: {profile.email}</p>
-          <p>User ID: {profile.id}</p>
-          <p>Followers: {profile.followers.total}</p>
-          <a href={profile.external_urls.spotify}>Spotify Profile Link</a>
-          <Playback />
-        </div>
-
-      ) : (
-        <p>Profile Hidden</p>
-      )}
-    </>
+    <h1>Muse</h1>
+    {/* <Button variant="contained" onClick={handleShowProfile}>{!showProfile? 'Show Profile': 'Hide Profile'}</Button> */}
+    {loading ? (
+      <CircularProgress />
+    ) : profile ? (
+      <div>
+        <h2>{profile.display_name}</h2>
+        {profile.images && profile.images[0] && (
+          <img src={profile.images[0].url} alt="Profile" width={200} />
+        )}
+        <p>Email: {profile.email}</p>
+        <p>User ID: {profile.id}</p>
+        <p>Followers: {profile.followers.total}</p>
+        <a href={profile.external_urls.spotify}>Spotify Profile Link</a>
+        <Playback />
+      </div>
+    ) : (
+      <p>Profile Hidden</p>
+    )}
+  </>
   );
 };
 

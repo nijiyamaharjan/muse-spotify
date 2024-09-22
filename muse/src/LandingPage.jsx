@@ -9,6 +9,7 @@ import TopArtists from './TopArtists';
 import TopTracks from './TopTracks';
 import Box from '@mui/material/Box';
 import RecentlyPlayed from './RecentlyPlayed';
+import CircularProgress from '@mui/material/CircularProgress'; 
 
 function LandingPage() {
   

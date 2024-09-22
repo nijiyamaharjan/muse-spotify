@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress'; 
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
@@ -49,7 +49,7 @@ function TopTracks() {
 
     const renderTopTracks = () => {
         if (loading) {
-            return <p>Loading...</p>;
+            return <CircularProgress />;
         }
 
         if (!topTracks || topTracks.length === 0) {
@@ -58,8 +58,12 @@ function TopTracks() {
 
         return (
             <ol>
+                
                 {topTracks.map((track, index) => (
                     <li key={index}>
+                        {track.album.images && track.album.images[0] && (
+                            <img src={track.album.images[0].url} alt="Profile" width={60} />
+                        )}
                         {track.name} by {track.artists.map(artist => artist.name).join(", ")}
                     </li>
                 ))}
