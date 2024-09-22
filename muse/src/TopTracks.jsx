@@ -1,80 +1,57 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 
 function TopTracks() {
     const [topTracks, setTopTracks] = useState(null);
     const [showTopTracks, setShowTopTracks] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     let accessToken = localStorage.getItem("access_token");
 
-    const handleShowTopTracks_1Year = async () => {
+    const handleShowTopTracks = async (id, timeRange) => {
         if (!showTopTracks) {
             try {
-            const timeRange = 'long_term';
-            const limit = 50;
-            const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
-            setTopTracks(topTracks);
-          } catch (error) {
-            console.error("Cannot fetch top tracks", error);
-          }
-        }
-        setShowTopTracks(prevState => !prevState);
-    };
-
-    const handleShowTopTracks_6Months = async () => {
-        if (!showTopTracks) {
-            try {
-            const timeRange = 'medium_term';
-            const limit = 50;
-            const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
-            setTopTracks(topTracks);
-          } catch (error) {
-            console.error("Cannot fetch top tracks", error);
-          }
-        }
-        setShowTopTracks(prevState => !prevState);
-    };
-
-    const handleShowTopTracks_4Weeks = async () => {
-        if (!showTopTracks) {
-            try {
-            const timeRange = 'short_term';
-            const limit = 50;
-            const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
-            setTopTracks(topTracks);
-          } catch (error) {
-            console.error("Cannot fetch top tracks", error);
-          }
+                const limit = 50;
+                const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
+                setTopTracks(topTracks);
+                setSelectedId(id);
+            } catch (error) {
+                console.error("Cannot fetch top tracks", error);
+            }
         }
         setShowTopTracks(prevState => !prevState);
     };
 
     return (
-    <>
-      <Button variant="contained" id="1Year" onClick={handleShowTopTracks_1Year}>
-        {showTopTracks ? 'Hide Top Tracks 1 Year' : 'Show Top Tracks 1 Year'}
-      </Button>
-      <Button variant="contained" id="6Months" onClick={handleShowTopTracks_6Months}>
-        {showTopTracks ? 'Hide Top Tracks 6 Months' : 'Show Top Tracks 6 Months'}
-      </Button>
-      <Button variant="contained" id="4Weeks" onClick={handleShowTopTracks_4Weeks}>
-        {showTopTracks ? 'Hide Top Tracks 4 Weeks' : 'Show Top Tracks 4 Weeks'}
-      </Button>
-      {showTopTracks && topTracks ? (
-        <div>
-          {<h2>Top Tracks</h2>}
-          <ol>
-            {topTracks.map(track => (
-              <li key={track.id}>
-                {track.name} by {track.artists.map(artist => artist.name).join(", ")}
-              </li>
-            ))}
-          </ol>
-        </div>
-      ) : (
-        <p>Top Tracks Hidden</p>
-      )}
-    </>
-    )
+        <>
+            <Button variant="contained" id="1Year" onClick={() => handleShowTopTracks("1Year", "long_term")}>
+                {showTopTracks && selectedId === "1Year" ? 'Hide Top Tracks 1 Year' : 'Show Top Tracks 1 Year'}
+            </Button>
+            <Button variant="contained" id="6Months" onClick={() => handleShowTopTracks("6Months", "medium_term")}>
+                {showTopTracks && selectedId === "6Months" ? 'Hide Top Tracks 6 Months' : 'Show Top Tracks 6 Months'}
+            </Button>
+            <Button variant="contained" id="4Weeks" onClick={() => handleShowTopTracks("4Weeks", "short_term")}>
+                {showTopTracks && selectedId === "4Weeks" ? 'Hide Top Tracks 4 Weeks' : 'Show Top Tracks 4 Weeks'}
+            </Button>
+
+            {showTopTracks && topTracks ? (
+                <div>
+                    {selectedId === "1Year" ? <h2>Top Tracks 1 Year</h2> : 
+                     selectedId === "6Months" ? <h2>Top Tracks 6 Months</h2> : 
+                     selectedId === "4Weeks" ? <h2>Top Tracks 4 Weeks</h2> : null}
+                    
+                    <ol>
+                        {topTracks.map(track => (
+                            <li key={track.id}>
+                                {track.name} by {track.artists.map(artist => artist.name).join(", ")}
+                            </li>
+                        ))}
+                    </ol>
+                </div>
+            ) : (
+                <p>Top Tracks Hidden</p>
+            )}
+        </>
+    );
 }
 
 export default TopTracks;

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
+import Playback from './Playback';
 
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
 
 function Profile() {
+  // redirectToAuthCodeFlow(clientId);
   const [profile, setProfile] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [access, setAccess] = useState(null);
 
   const handleShowProfile = async () => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     let accessToken = localStorage.getItem("access_token");
+    setAccess(accessToken);
 
     if (!accessToken && !code) {
       redirectToAuthCodeFlow(clientId); // No token or code, redirect to authorize
@@ -19,35 +23,39 @@ function Profile() {
       try {
         accessToken = await getAccessToken(clientId, code);
         const profile = await fetchProfile(accessToken);
-        setProfile(profile);  // Use setProfile to update state
+        setProfile(profile);
 
         // Clean up URL after successful exchange
         window.history.replaceState({}, document.title, "/");
       } catch (error) {
-        console.error("Authorization code expired or invalid, restarting flow.");
+        console.error("Authorization error:", error);
         localStorage.removeItem("access_token");
-        redirectToAuthCodeFlow(clientId);  // Restart auth flow
+        redirectToAuthCodeFlow(clientId); // Restart auth flow
       }
     } else {
       // If token exists, use it to fetch profile
       try {
         const profile = await fetchProfile(accessToken);
-        setProfile(profile);  // Use setProfile to update state
+        setProfile(profile);
       } catch (error) {
-        console.error("Token expired or invalid, restarting flow");
+        console.error("Token expired or invalid:", error);
         localStorage.removeItem("access_token");
-        redirectToAuthCodeFlow(clientId);  // Restart auth flow
+        redirectToAuthCodeFlow(clientId); // Restart auth flow
       }
     }
-    setShowProfile(prevState => !prevState);
+    // setShowProfile(prevState => !prevState);
   };
+
+  useEffect(() => {
+    handleShowProfile();
+}, []);
 
   return (
     <>
       <h1>Muse</h1>
-      <Button variant="contained" onClick={handleShowProfile}>{!showProfile? 'Show Profile': 'Hide Profile'}</Button>
+      {/* <Button variant="contained" onClick={handleShowProfile}>{!showProfile? 'Show Profile': 'Hide Profile'}</Button> */}
       
-      {profile && showProfile ? (
+      {profile? (
         <div>
           <h2>{profile.display_name}</h2>
           {profile.images && profile.images[0] && (
@@ -57,7 +65,9 @@ function Profile() {
           <p>User ID: {profile.id}</p>
           <p>Followers: {profile.followers.total}</p>
           <a href={profile.external_urls.spotify}>Spotify Profile Link</a>
+          <Playback />
         </div>
+
       ) : (
         <p>Profile Hidden</p>
       )}
@@ -75,7 +85,7 @@ async function redirectToAuthCodeFlow(clientId) {
   params.append("client_id", clientId);
   params.append("response_type", "code");
   params.append("redirect_uri", "http://localhost:5173/callback");
-  params.append("scope", "user-read-private user-read-email user-top-read");
+  params.append("scope", "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played");
   params.append("code_challenge_method", "S256");
   params.append("code_challenge", challenge);
 
@@ -110,7 +120,7 @@ async function getAccessToken(clientId, code) {
   params.append("code", code);
   params.append("redirect_uri", "http://localhost:5173/callback");
   params.append("code_verifier", verifier);
-  params.append("scope", "user-read-private user-read-email user-top-read");
+  params.append("scope", "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played");
 
   try {
     const result = await fetch("https://accounts.spotify.com/api/token", {
@@ -145,6 +155,7 @@ async function fetchProfile(token) {
     }
 
     const profile = await result.json();
+    localStorage.setItem("user_id", profile.id);
     console.log("Fetched profile:", profile);
     return profile;
   } catch (error) {
