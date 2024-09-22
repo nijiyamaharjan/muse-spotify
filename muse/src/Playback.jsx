@@ -4,32 +4,33 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function Playback() {
     const [playback, setPlayback] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loadingPlayback, setLoadingPlayback] = useState(false);
+    const [loadingRecentlyPlayed, setLoadingRecentlyPlayed] = useState(false);
     const [recentlyPlayed, setRecentlyPlayed] = useState([]); // Initialize as an empty array
     const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(false);
     const accessToken = localStorage.getItem("access_token");
 
     const handleShowPlayback = async () => {
-        setLoading(true); // Start loading
+        setLoadingPlayback(true); // Start loading
         try {
             const playbackData = await fetchPlayback(accessToken);
             setPlayback(playbackData);
         } catch (error) {
             console.error("Cannot fetch playback", error);
         } finally {
-            setLoading(false); // End loading
+            setLoadingPlayback(false); // End loading
         }
     };
 
     const handleShowRecentlyPlayed = async () => {
-        setLoading(true); // Start loading
+        setLoadingRecentlyPlayed(true); // Start loading
         try {
             const recentlyPlayedData = await fetchRecentlyPlayed(accessToken);
             setRecentlyPlayed(recentlyPlayedData);
         } catch (error) {
             console.error("Cannot fetch recently played", error);
         } finally {
-            setLoading(false); // End loading
+            setLoadingRecentlyPlayed(false); // End loading
         }
         setShowRecentlyPlayed(prevState => !prevState);
     };
@@ -40,7 +41,7 @@ function Playback() {
 
     return (
         <>
-            {loading ? (
+            {loadingPlayback ? (
                 <p><CircularProgress /></p>
             ) : (
                 playback ? (
@@ -59,7 +60,7 @@ function Playback() {
                 {showRecentlyPlayed ? 'Hide Recently Played' : 'Show Recently Played'}
             </Button>
 
-            {loading ? (
+            {loadingRecentlyPlayed ? (
                 <p><CircularProgress /></p>
             ) : (
                 showRecentlyPlayed && recentlyPlayed.length > 0 ? (
