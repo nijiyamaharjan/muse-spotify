@@ -21,7 +21,7 @@ function TopTracks() {
     return (
     <>
       <Button variant="contained" onClick={handleShowTopTracks}>
-        {showTopTracks ? 'Hide Top Tracks' : 'Show Top Tracks'}
+        {showTopTracks ? 'Hide Top Tracks 1 Year' : 'Show Top Tracks 1 Year'}
       </Button>
       {showTopTracks && topTracks ? (
         <div>

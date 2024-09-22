@@ -45,7 +45,7 @@ function Profile() {
   return (
     <>
       <h1>Muse</h1>
-      <Button variant="contained" onClick={handleShowProfile}>Show Profile</Button>
+      <Button variant="contained" onClick={handleShowProfile}>{!showProfile? 'Show Profile': 'Hide Profile'}</Button>
       
       {profile && showProfile ? (
         <div>
