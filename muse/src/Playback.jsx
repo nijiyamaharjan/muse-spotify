@@ -5,9 +5,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 function Playback() {
     const [playback, setPlayback] = useState(null);
     const [loadingPlayback, setLoadingPlayback] = useState(false);
-    const [loadingRecentlyPlayed, setLoadingRecentlyPlayed] = useState(false);
-    const [recentlyPlayed, setRecentlyPlayed] = useState([]); // Initialize as an empty array
-    const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(false);
+    // const [loadingRecentlyPlayed, setLoadingRecentlyPlayed] = useState(false);
+    // const [recentlyPlayed, setRecentlyPlayed] = useState([]); // Initialize as an empty array
+    // const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(false);
     const accessToken = localStorage.getItem("access_token");
 
     const handleShowPlayback = async () => {
@@ -22,18 +22,18 @@ function Playback() {
         }
     };
 
-    const handleShowRecentlyPlayed = async () => {
-        setLoadingRecentlyPlayed(true); // Start loading
-        try {
-            const recentlyPlayedData = await fetchRecentlyPlayed(accessToken);
-            setRecentlyPlayed(recentlyPlayedData);
-        } catch (error) {
-            console.error("Cannot fetch recently played", error);
-        } finally {
-            setLoadingRecentlyPlayed(false); // End loading
-        }
-        setShowRecentlyPlayed(prevState => !prevState);
-    };
+    // const handleShowRecentlyPlayed = async () => {
+    //     setLoadingRecentlyPlayed(true); // Start loading
+    //     try {
+    //         const recentlyPlayedData = await fetchRecentlyPlayed(accessToken);
+    //         setRecentlyPlayed(recentlyPlayedData);
+    //     } catch (error) {
+    //         console.error("Cannot fetch recently played", error);
+    //     } finally {
+    //         setLoadingRecentlyPlayed(false); // End loading
+    //     }
+    //     setShowRecentlyPlayed(prevState => !prevState);
+    // };
 
     useEffect(() => {
         handleShowPlayback();
@@ -56,7 +56,7 @@ function Playback() {
                 )
             )}
 
-            <Button variant="contained" onClick={() => handleShowRecentlyPlayed()}>
+            {/* <Button variant="contained" onClick={() => handleShowRecentlyPlayed()}>
                 {showRecentlyPlayed ? 'Hide Recently Played' : 'Show Recently Played'}
             </Button>
 
@@ -77,7 +77,7 @@ function Playback() {
                 ) : (
                     <div>Recently played tracks hidden</div>
                 )
-            )}
+            )} */}
         </>
     );
 }
@@ -110,29 +110,29 @@ async function fetchPlayback(token) {
     }
 }
 
-async function fetchRecentlyPlayed(token) {
-    try {
-        const result = await fetch(`https://api.spotify.com/v1/me/player/recently-played?limit=20`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` }
-        });
+// async function fetchRecentlyPlayed(token) {
+//     try {
+//         const result = await fetch(`https://api.spotify.com/v1/me/player/recently-played?limit=20`, {
+//             method: "GET",
+//             headers: { Authorization: `Bearer ${token}` }
+//         });
 
-        if (!result.ok) {
-            throw new Error(`Recently played tracks fetch failed: ${result.statusText}`);
-        }
+//         if (!result.ok) {
+//             throw new Error(`Recently played tracks fetch failed: ${result.statusText}`);
+//         }
 
-        const data = await result.json();
-        const recentlyPlayed = data.items || []; // Fallback to an empty array
+//         const data = await result.json();
+//         const recentlyPlayed = data.items || []; // Fallback to an empty array
 
-        if (!recentlyPlayed.length) {
-            console.warn("No recently played tracks found.");
-            return [];
-        }
+//         if (!recentlyPlayed.length) {
+//             console.warn("No recently played tracks found.");
+//             return [];
+//         }
 
-        console.log("Fetched recently played:", recentlyPlayed);
-        return recentlyPlayed;
-    } catch (error) {
-        console.error("Error fetching recently played:", error);
-        return [];
-    }
-}
+//         console.log("Fetched recently played:", recentlyPlayed);
+//         return recentlyPlayed;
+//     } catch (error) {
+//         console.error("Error fetching recently played:", error);
+//         return [];
+//     }
+// }

@@ -1,55 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
+import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 function TopTracks() {
+    const [value, setValue] = useState(0);
     const [topTracks, setTopTracks] = useState(null);
-    const [showTopTracks, setShowTopTracks] = useState(false);
-    const [selectedId, setSelectedId] = useState(null);
+    const [loading, setLoading] = useState(false);
+
     let accessToken = localStorage.getItem("access_token");
 
-    const handleShowTopTracks = async (id, timeRange) => {
-        if (!showTopTracks) {
-            try {
-                const limit = 50;
-                const topTracks = await fetchTopTracks(accessToken, timeRange, limit);
-                setTopTracks(topTracks);
-                setSelectedId(id);
-            } catch (error) {
-                console.error("Cannot fetch top tracks", error);
-            }
-        }
-        setShowTopTracks(prevState => !prevState);
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
     };
 
+    const getTimeRange = () => {
+        switch (value) {
+            case 0:
+                return 'short_term';  // Last 4 weeks
+            case 1:
+                return 'medium_term'; // Last 6 months
+            case 2:
+                return 'long_term';   // Last 12 months
+            default:
+                return 'short_term';
+        }
+    };
+
+    useEffect(() => {
+        const fetchTracks = async () => {
+            setLoading(true);  // Start loading
+            try {
+                const timeRange = getTimeRange();
+                const limit = 50;  
+                const topTracksData = await fetchTopTracks(accessToken, timeRange, limit);
+                setTopTracks(topTracksData);
+            } catch (error) {
+                console.error("Cannot fetch top tracks", error);
+            } finally {
+                setLoading(false);  // End loading
+            }
+        };
+
+        fetchTracks();
+    }, [value, accessToken]);
+
+    const renderTopTracks = () => {
+        if (loading) {
+            return <p>Loading...</p>;
+        }
+
+        if (!topTracks || topTracks.length === 0) {
+            return <p>No top tracks available.</p>;
+        }
+
+        return (
+            <ol>
+                {topTracks.map((track, index) => (
+                    <li key={index}>
+                        {track.name} by {track.artists.map(artist => artist.name).join(", ")}
+                    </li>
+                ))}
+            </ol>
+        );
+    };
+
+    function CustomTabPanel(props) {
+        const { children, value, index, ...other } = props;
+    
+        return (
+          <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+          >
+            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+          </div>
+        );
+      }
+    
+      CustomTabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.number.isRequired,
+        value: PropTypes.number.isRequired,
+      };
+    
+      function a11yProps(index) {
+        return {
+          id: `simple-tab-${index}`,
+          'aria-controls': `simple-tabpanel-${index}`,
+        };
+      }
+    
     return (
         <>
-            <Button variant="contained" id="1Year" onClick={() => handleShowTopTracks("1Year", "long_term")}>
-                {showTopTracks && selectedId === "1Year" ? 'Hide Top Tracks 1 Year' : 'Show Top Tracks 1 Year'}
-            </Button>
-            <Button variant="contained" id="6Months" onClick={() => handleShowTopTracks("6Months", "medium_term")}>
-                {showTopTracks && selectedId === "6Months" ? 'Hide Top Tracks 6 Months' : 'Show Top Tracks 6 Months'}
-            </Button>
-            <Button variant="contained" id="4Weeks" onClick={() => handleShowTopTracks("4Weeks", "short_term")}>
-                {showTopTracks && selectedId === "4Weeks" ? 'Hide Top Tracks 4 Weeks' : 'Show Top Tracks 4 Weeks'}
-            </Button>
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange} aria-label="tabs">
+              <Tab label="Last 4 Weeks" {...a11yProps(0)} />
+              <Tab label="Last 6 Months" {...a11yProps(1)} />
+              <Tab label="Last 12 Months" {...a11yProps(2)} />
+            </Tabs>
+          </Box>
+          
+          <CustomTabPanel value={value} index={0}>
+          <h1>Top Tracks (Last 4 Weeks)</h1>
+            {renderTopTracks()}
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+          <h1>Top Tracks (Last 6 Months)</h1>
+            {renderTopTracks()}
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={2}>
+          <h1>Top Tracks (Last 12 Months)</h1>
+            {renderTopTracks()}
+          </CustomTabPanel>
+        </Box>
 
-            {showTopTracks && topTracks ? (
-                <div>
-                    {selectedId === "1Year" ? <h2>Top Tracks 1 Year</h2> : 
-                     selectedId === "6Months" ? <h2>Top Tracks 6 Months</h2> : 
-                     selectedId === "4Weeks" ? <h2>Top Tracks 4 Weeks</h2> : null}
-                    
-                    <ol>
-                        {topTracks.map(track => (
-                            <li key={track.id}>
-                                {track.name} by {track.artists.map(artist => artist.name).join(", ")}
-                            </li>
-                        ))}
-                    </ol>
-                </div>
-            ) : (
-                <p>Top Tracks Hidden</p>
-            )}
         </>
     );
 }
