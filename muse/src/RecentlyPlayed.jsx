@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 function RecentlyPlayed() {
     const [loadingRecentlyPlayed, setLoadingRecentlyPlayed] = useState(false);
     const [recentlyPlayed, setRecentlyPlayed] = useState([]); // Initialize as an empty array
-    const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(false);
+
 
     // Access token retrieval
     const accessToken = localStorage.getItem("access_token");
@@ -20,31 +20,33 @@ function RecentlyPlayed() {
         } finally {
             setLoadingRecentlyPlayed(false); // End loading
         }
-        setShowRecentlyPlayed(prevState => !prevState);
     };
+
+    useEffect(() => {
+        handleShowRecentlyPlayed();
+    }, []);
 
     return (
         <>
-            <Button variant="contained" onClick={handleShowRecentlyPlayed}>
-                {showRecentlyPlayed ? 'Hide Recently Played' : 'Show Recently Played'}
-            </Button>
-
             {loadingRecentlyPlayed ? (
                 <p><CircularProgress /></p>
             ) : (
-                showRecentlyPlayed && recentlyPlayed.length > 0 ? (
+                 recentlyPlayed.length > 0 ? (
                     <div>
                         <h4>Recently Played Tracks</h4>
                         <ol>
                             {recentlyPlayed.map((item, index) => (
                                 <li key={index}>
-                                    {item.track.name} by {item.track.artists.map(artist => artist.name).join(", ")}
+                                        {item.track.album.images && item.track.album.images[0] && (
+                                            <img src={item.track.album.images[0].url} alt="Profile" width={60} />
+                                        )}
+                                        {item.track.name} by {item.track.artists.map(artist => artist.name).join(", ")}
                                 </li>
                             ))}
                         </ol>
                     </div>
                 ) : (
-                    <div>No recently played tracks to show</div>
+                    <CircularProgress/>
                 )
             )}
         </>

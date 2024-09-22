@@ -73,7 +73,7 @@ function Profile() {
         <Playback />
       </div>
     ) : (
-      <p>Profile Hidden</p>
+      <CircularProgress/>
     )}
   </>
   );

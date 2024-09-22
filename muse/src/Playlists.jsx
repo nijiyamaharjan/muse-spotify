@@ -36,6 +36,9 @@ function Playlists() {
                     <ol>
                         {playlists.map(playlist => (
                             <li key={playlist.id}>
+                                {playlist.images && playlist.images[0] && (
+                                    <img src={playlist.images[0].url} alt="Profile" width={60} />
+                                )}
                                 {playlist.name} by {playlist.owner.display_name}
                             </li>
                         ))}
@@ -45,7 +48,7 @@ function Playlists() {
                 )}
             </div>
         ) : (
-            <p>Playlists Hidden</p>
+            <CircularProgress/>
         )
     )}
 </>
