@@ -57,7 +57,7 @@ function TopArtists() {
         }
 
         return (
-            <ul className="flex flex-wrap">
+            <ul className="flex flex-wrap justify-center items-center">
                 {topArtists.map((artist, index) => (
                     <li key={index} className="flex flex-col items-center justify-center m-4">
                         {artist.images && artist.images[0] && (

@@ -33,7 +33,7 @@ function RecentlyPlayed() {
                 <p><CircularProgress /></p>
             ) : (
                  recentlyPlayed.length > 0 ? (
-                    <div>
+                    <div className='flex items-center justify-center'>
                         <ol>
                             {recentlyPlayed.map((item, index) => (
                                 <li key={index}>

@@ -123,6 +123,7 @@ function TopTracks() {
             </Tabs>
           </Box>
           
+          <div className='items-center justify-center flex'>
           <CustomTabPanel value={value} index={0}>
           <h1 className="text-3xl text-center font-bold mb-6">Top Tracks (Last 4 Weeks)</h1>
             {renderTopTracks()}
@@ -135,6 +136,7 @@ function TopTracks() {
           <h1 className="text-3xl text-center font-bold">Top Tracks (Last 12 Months)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
+          </div>
         </Box>
         </>
     );

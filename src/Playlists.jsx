@@ -33,7 +33,7 @@ function Playlists() {
             <div>
     <h1 className="text-3xl font-bold mb-6" >Public Playlists</h1>
     {playlists.length > 0 ? (
-        <ol className="flex flex-wrap">
+        <ol className="flex flex-wrap items-center justify-center">
             {playlists.filter(playlist => playlist.owner.display_name == 'nijiya').map(playlist => (
                 <li key={playlist.id} className="flex flex-col m-4 items-start"> {/* Added items-start for left alignment */}
                     {playlist.images && playlist.images[0] && (
