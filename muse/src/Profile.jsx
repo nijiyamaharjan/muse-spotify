@@ -6,15 +6,16 @@ import CircularProgress from '@mui/material/CircularProgress';
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
 
 function Profile() {
+  //redirectToAuthCodeFlow(clientId);
   const [profile, setProfile] = useState(null);
   const [access, setAccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleShowProfile = async () => {
+    //localStorage.clear();
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     let accessToken = localStorage.getItem("access_token");
-    setAccess(accessToken);
 
     if (!accessToken && !code) {
       redirectToAuthCodeFlow(clientId); // No token or code, redirect to authorize
@@ -59,7 +60,7 @@ function Profile() {
       <CircularProgress />
     </div>
   ) : profile ? (
-    <div className='flex flex-col text-left text-white'>
+    <div className='flex flex-col text-left items-center text-white'>
       <div className='flex flex-row'>
         <div>
           {profile.images && profile.images[0] && (
@@ -71,20 +72,23 @@ function Profile() {
           )}
         </div>
         <div className='text-left mb-6 ml-3'>
-          <h2 className="text-2xl font-semibold  mb-4">{profile.display_name}</h2>
+          <div className='flex flex-row'>
+            <h2 className="text-2xl font-semibold  mb-4">{profile.display_name} </h2> 
+            <a 
+              href={profile.external_urls.spotify} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="mt-1.5 h-7 ml-4"
+            >
+              <img width={25} src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="link" />
+            </a>
+          </div>
           <p className="text-lg">Email: <span className="font-medium">{profile.email}</span></p>
           <p className="text-lg">User ID: <span className="font-medium">{profile.id}</span></p>
           <p className="text-lg">Followers: <span className="font-medium">{profile.followers.total}</span></p>
         </div> 
       </div>
-      <a 
-            href={profile.external_urls.spotify} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="inline-block w-44 mt-1 px-4 py-2 bg-spotify-green text-white rounded hover:bg-green-700 transition duration-300"
-          >
-            Visit Spotify Profile
-          </a>
+      
       <Playback />
     </div>
     
@@ -149,27 +153,31 @@ async function getAccessToken(clientId, code) {
       body: params
     });
 
-    console.log("Token Request Response:", result); // Log the raw response
+    console.log("Token Request Response:", result);
 
     if (!result.ok) {
+      console.error(`Error during token exchange: ${result.statusText}`);
       throw new Error(`Token request failed: ${result.statusText}`);
     }
 
     const responseBody = await result.json();
-    console.log("Token Response Body:", responseBody); // Log the body of the response
+    console.log("Token Response Body:", responseBody);
 
     const { access_token } = responseBody;
     if (!access_token) {
       throw new Error("No access token received from Spotify.");
     }
 
+    // Store and return access token
     localStorage.setItem("access_token", access_token);
+    console.log("Access token stored successfully.");
     return access_token;
   } catch (error) {
     console.error("Error fetching access token:", error);
-    throw error; // Propagate error for handling in the calling function
+    throw error;
   }
 }
+
 
 async function fetchProfile(token) {
   try {

@@ -28,12 +28,12 @@ function RecentlyPlayed() {
 
     return (
         <>
+        <h1 className="text-3xl font-bold mb-6 text-center">Recently Played Tracks</h1>
             {loadingRecentlyPlayed ? (
                 <p><CircularProgress /></p>
             ) : (
                  recentlyPlayed.length > 0 ? (
                     <div>
-                        <h1 className="text-3xl font-bold mb-6">Recently Played Tracks</h1>
                         <ol>
                             {recentlyPlayed.map((item, index) => (
                                 <li key={index}>
