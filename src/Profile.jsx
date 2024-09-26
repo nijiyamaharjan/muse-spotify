@@ -143,7 +143,8 @@ async function getAccessToken(clientId, code) {
   params.append("client_id", clientId);
   params.append("grant_type", "authorization_code");
   params.append("code", code);
-  params.append("redirect_uri", "http://localhost:5173/callback");
+  // params.append("redirect_uri", "http://localhost:5173/callback");
+  params.append("redirect_uri", 'https://nijiyamaharjan.github.io/muse-spotify/');//"http://localhost:5173/callback");
   params.append("code_verifier", verifier);
 
   try {
