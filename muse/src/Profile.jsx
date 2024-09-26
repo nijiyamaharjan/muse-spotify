@@ -72,7 +72,7 @@ function Profile() {
         </div>
         <div className='text-left mb-6 ml-3'>
           <h2 className="text-2xl font-semibold  mb-4">{profile.display_name}</h2>
-          <p className="text-gray-700 text-lg">Email: <span className="font-medium">{profile.email}</span></p>
+          <p className="text-white text-lg">Email: <span className="font-medium">{profile.email}</span></p>
           <p className="text-gray-700 text-lg">User ID: <span className="font-medium">{profile.id}</span></p>
           <p className="text-gray-700 text-lg">Followers: <span className="font-medium">{profile.followers.total}</span></p>
         </div> 

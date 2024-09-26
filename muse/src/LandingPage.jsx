@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Profile from './Profile';
-import Playback from './Playback';
-import Playlists from './Playlists';
-import TopArtists from './TopArtists';
-import TopTracks from './TopTracks';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Profile from './Profile';
+import TopTracks from './TopTracks';
+import TopArtists from './TopArtists';
+import Playlists from './Playlists';
 import RecentlyPlayed from './RecentlyPlayed';
-import CircularProgress from '@mui/material/CircularProgress'; 
 
 function LandingPage() {
   
@@ -35,29 +32,35 @@ function LandingPage() {
     value: PropTypes.number.isRequired,
   };
 
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
-
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleButtonClick = (index) => {
+    setValue(index);
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="tabs">
-          <Tab label="Profile" {...a11yProps(0)} />
-          <Tab label="Top Tracks" {...a11yProps(1)} />
-          <Tab label="Top Artists" {...a11yProps(2)} />
-          <Tab label="Playlists" {...a11yProps(3)} />
-          <Tab label="Recently Played" {...a11yProps(4)} />
-        </Tabs>
+    <Box sx={{ width: '100%', bgcolor: '#121212', borderRadius: '8px', color: '#ffffff' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-around', borderBottom: '1px solid #333' }}>
+        {['Profile', 'Top Tracks', 'Top Artists', 'Playlists', 'Recently Played'].map((label, index) => (
+          <Button 
+            key={index}
+            variant={value === index ? "contained" : "text"} 
+            onClick={() => handleButtonClick(index)} 
+            sx={{
+              flexGrow: 1,
+              padding: '12px 0',
+              fontWeight: value === index ? 'bold' : 'normal',
+              color: value === index ? '#ffffff' : '#b0b0b0',
+              backgroundColor: value === index ? '#3e8e41' : 'transparent',
+              transition: 'background-color 0.3s',
+              '&:hover': {
+                backgroundColor: value === index ? '#3e8e41' : '#424242',
+              }
+            }}
+          >
+            {label}
+          </Button>
+        ))}
       </Box>
       
       <CustomTabPanel value={value} index={0}>
