@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Playback from './Playback';
-import CircularProgress from '@mui/material/CircularProgress'; 
+import CircularProgress from '@mui/material/CircularProgress';
 
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
 
 function Profile() {
-  // redirectToAuthCodeFlow(clientId);
   const [profile, setProfile] = useState(null);
   const [access, setAccess] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,7 +18,7 @@ function Profile() {
 
     if (!accessToken && !code) {
       redirectToAuthCodeFlow(clientId); // No token or code, redirect to authorize
-    } else if (code) {
+    } else if (code && !accessToken) {
       // If we have a code, exchange it for an access token
       try {
         accessToken = await getAccessToken(clientId, code);
@@ -33,7 +32,7 @@ function Profile() {
         localStorage.removeItem("access_token");
         redirectToAuthCodeFlow(clientId); // Restart auth flow
       }
-    } else {
+    } else if (accessToken) {
       setLoading(true);
       // If token exists, use it to fetch profile
       try {
@@ -45,39 +44,37 @@ function Profile() {
         redirectToAuthCodeFlow(clientId); // Restart auth flow
       } finally {
         setLoading(false);  // End loading
+      }
     }
-    }
-    // setShowProfile(prevState => !prevState);
   };
 
   useEffect(() => {
     handleShowProfile();
-}, []);
+  }, []);
 
   return (
     <>
-    <h1 className="text-3xl font-bold underline">Muse</h1>
-    {/* <Button variant="contained" onClick={handleShowProfile}>{!showProfile? 'Show Profile': 'Hide Profile'}</Button> */}
-    {loading ? (
-      <CircularProgress />
-    ) : profile ? (
-      <div>
-        <h2>{profile.display_name}</h2>
-        {profile.images && profile.images[0] && (
-          <img src={profile.images[0].url} alt="Profile" width={200} />
-        )}
-        <p>Email: {profile.email}</p>
-        <p>User ID: {profile.id}</p>
-        <p>Followers: {profile.followers.total}</p>
-        <a href={profile.external_urls.spotify}>Spotify Profile Link</a>
-        <Playback />
-      </div>
-    ) : (
-      <CircularProgress/>
-    )}
-  </>
+      <h1 className="text-3xl font-bold underline">Muse</h1>
+      {loading ? (
+        <CircularProgress />
+      ) : profile ? (
+        <div>
+          <h2>{profile.display_name}</h2>
+          {profile.images && profile.images[0] && (
+            <img src={profile.images[0].url} alt="Profile" width={200} />
+          )}
+          <p>Email: {profile.email}</p>
+          <p>User ID: {profile.id}</p>
+          <p>Followers: {profile.followers.total}</p>
+          <a href={profile.external_urls.spotify}>Spotify Profile Link</a>
+          <Playback />
+        </div>
+      ) : (
+        <div>No profile available</div>
+      )}
+    </>
   );
-};
+}
 
 async function redirectToAuthCodeFlow(clientId) {
   const verifier = generateCodeVerifier(128);
@@ -124,7 +121,6 @@ async function getAccessToken(clientId, code) {
   params.append("code", code);
   params.append("redirect_uri", "http://localhost:5173/callback");
   params.append("code_verifier", verifier);
-  params.append("scope", "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played");
 
   try {
     const result = await fetch("https://accounts.spotify.com/api/token", {
@@ -133,13 +129,21 @@ async function getAccessToken(clientId, code) {
       body: params
     });
 
+    console.log("Token Request Response:", result); // Log the raw response
+
     if (!result.ok) {
       throw new Error(`Token request failed: ${result.statusText}`);
     }
 
-    const { access_token } = await result.json();
+    const responseBody = await result.json();
+    console.log("Token Response Body:", responseBody); // Log the body of the response
+
+    const { access_token } = responseBody;
+    if (!access_token) {
+      throw new Error("No access token received from Spotify.");
+    }
+
     localStorage.setItem("access_token", access_token);
-    console.log("Access Token:", access_token);
     return access_token;
   } catch (error) {
     console.error("Error fetching access token:", error);
