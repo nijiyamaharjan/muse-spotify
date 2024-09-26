@@ -49,24 +49,24 @@ function TopArtists() {
 
     const renderTopArtists = () => {
         if (loading) {
-            return <CircularProgress />;
+            return <CircularProgress color="inherit" />; // Use inherit color for dark mode
         }
 
         if (!topArtists || topArtists.length === 0) {
-            return <p>No top artists available.</p>;
+            return <p className="text-white">No top artists available.</p>; // Change text color for dark mode
         }
 
         return (
             <ul className="flex flex-wrap">
                 {topArtists.map((artist, index) => (
-                <li key={index} className="flex flex-col items-center justify-center m-4">
-                {artist.images && artist.images[0] && (
-                    <img src={artist.images[0].url} alt={artist.name} className="w-72 h-72 object-cover m-3" />
-                )}
-                <p className="text-center font-semibold">
-                    {index + 1}. {artist.name}
-                </p>
-                </li>
+                    <li key={index} className="flex flex-col items-center justify-center m-4">
+                        {artist.images && artist.images[0] && (
+                            <img src={artist.images[0].url} alt={artist.name} className="w-72 h-72 object-cover m-3" />
+                        )}
+                        <p className="text-center font-semibold text-white">
+                            {index + 1}. {artist.name}
+                        </p>
+                    </li>
                 ))}
             </ul>
         );
@@ -76,56 +76,55 @@ function TopArtists() {
         const { children, value, index, ...other } = props;
     
         return (
-          <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-          >
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-          </div>
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                id={`simple-tabpanel-${index}`}
+                aria-labelledby={`simple-tab-${index}`}
+                {...other}
+            >
+                {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+            </div>
         );
-      }
+    }
     
-      CustomTabPanel.propTypes = {
+    CustomTabPanel.propTypes = {
         children: PropTypes.node,
         index: PropTypes.number.isRequired,
         value: PropTypes.number.isRequired,
-      };
+    };
     
-      function a11yProps(index) {
+    function a11yProps(index) {
         return {
-          id: `simple-tab-${index}`,
-          'aria-controls': `simple-tabpanel-${index}`,
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
         };
-      }
+    }
     
     return (
         <>
-        <Box sx={{ width: '100%' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="tabs">
-              <Tab label="Last 4 Weeks" {...a11yProps(0)} />
-              <Tab label="Last 6 Months" {...a11yProps(1)} />
-              <Tab label="Last 12 Months" {...a11yProps(2)} />
-            </Tabs>
-          </Box>
-          
-          <CustomTabPanel value={value} index={0}>
-          <h1 className="text-3xl font-bold mb-6">Top Artists (Last 4 Weeks)</h1>
-            {renderTopArtists()}
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-          <h1 className="text-3xl font-bold mb-6">Top Artists (Last 6 Months)</h1>
-            {renderTopArtists()}
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={2}>
-          <h1 className="text-3xl font-bold mb-6">Top Artists (Last 12 Months)</h1>
-            {renderTopArtists()}
-          </CustomTabPanel>
-        </Box>
-
+            <Box sx={{ width: '100%', backgroundColor: '#121212', color: '#ffffff' }}> {/* Dark background */}
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={value} onChange={handleChange} aria-label="tabs" textColor="inherit">
+                        <Tab label="Last 4 Weeks" {...a11yProps(0)} />
+                        <Tab label="Last 6 Months" {...a11yProps(1)} />
+                        <Tab label="Last 12 Months" {...a11yProps(2)} />
+                    </Tabs>
+                </Box>
+                
+                <CustomTabPanel value={value} index={0}>
+                    <h1 className="text-3xl font-bold mb-6">Top Artists (Last 4 Weeks)</h1>
+                    {renderTopArtists()}
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                    <h1 className="text-3xl font-bold mb-6">Top Artists (Last 6 Months)</h1>
+                    {renderTopArtists()}
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                    <h1 className="text-3xl font-bold mb-6">Top Artists (Last 12 Months)</h1>
+                    {renderTopArtists()}
+                </CustomTabPanel>
+            </Box>
         </>
     );
 }

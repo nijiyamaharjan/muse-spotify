@@ -49,33 +49,33 @@ function TopTracks() {
 
     const renderTopTracks = () => {
         if (loading) {
-            return <CircularProgress />;
+            return <CircularProgress color="inherit" />; // Use inherit color for dark mode
         }
 
         if (!topTracks || topTracks.length === 0) {
-            return <p>No top tracks available.</p>;
+            return <p className="text-white">No top tracks available.</p>; // Change text color for dark mode
         }
 
         return (
-            <ol>
+            <ol className="list-decimal list-inside">
                 {topTracks.map((track, index) => (
-                    <li key={index}>
-                        <div className="flex text-justify">
-                            <div className='box-border h-10 w-10 py-6 font-semibold'>{index+1}</div>
-                            <div className='box-border h-20 w-20 p-2'> 
+                    <li key={index} className="flex items-center bg-gray-800 p-2 rounded mb-2">
+                        <div className='box-border h-10 w-10 font-semibold text-white'>{index + 1}</div>
+                        <div className='box-border h-20 w-20 p-2'> 
                             {track.album.images && track.album.images[0] && (
-                                <img src={track.album.images[0].url} alt="Profile" width={60} />
+                                <img src={track.album.images[0].url} alt="Album cover" width={60} />
                             )}
-                            </div>
-                            <div className='box-border h-20 w-96 p-6 font-semibold'>
-                                {track.name} 
-                            </div>
-                            <div className='box-border h-20 w-96 p-6 text-gray-700'>
+                        </div>
+                        <div className='box-border h-20 w-96 p-2 font-semibold text-white'>
+                            {track.name} 
+                        </div>
+                        <div className='box-border h-20 w-96 p-2 text-gray-400'>
                             {track.artists.map(artist => artist.name).join(", ")}
-                            </div>
-                            <div className='py-7'>
-                                <a href={track.external_urls.spotify}><img width={25} src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="link"/></a>
-                            </div>
+                        </div>
+                        <div className='py-1'>
+                            <a href={track.external_urls.spotify}>
+                                <img width={25} src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="link" />
+                            </a>
                         </div>
                     </li>
                 ))}
@@ -114,9 +114,9 @@ function TopTracks() {
     
     return (
         <>
-        <Box sx={{ width: '100%' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="tabs">
+        <Box sx={{ width: '100%', backgroundColor: '#121212', color: '#ffffff' }}> {/* Dark background */}
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', color: '#ffffff' }}>
+            <Tabs value={value} onChange={handleChange} aria-label="tabs" textColor="inherit">
               <Tab label="Last 4 Weeks" {...a11yProps(0)} />
               <Tab label="Last 6 Months" {...a11yProps(1)} />
               <Tab label="Last 12 Months" {...a11yProps(2)} />
@@ -136,7 +136,6 @@ function TopTracks() {
             {renderTopTracks()}
           </CustomTabPanel>
         </Box>
-
         </>
     );
 }
