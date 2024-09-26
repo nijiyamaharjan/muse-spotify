@@ -54,25 +54,45 @@ function Profile() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold underline">Muse</h1>
-      {loading ? (
-        <CircularProgress />
-      ) : profile ? (
+  {loading ? (
+    <div className="flex">
+      <CircularProgress />
+    </div>
+  ) : profile ? (
+    <div className='flex flex-col text-left'>
+      <div className='flex flex-row'>
         <div>
-          <h2>{profile.display_name}</h2>
           {profile.images && profile.images[0] && (
-            <img src={profile.images[0].url} alt="Profile" width={200} />
+            <img 
+              src={profile.images[0].url} 
+              alt="Profile" 
+              className="w-32 h-32 object-cover rounded-full mx-auto mb-4" 
+            />
           )}
-          <p>Email: {profile.email}</p>
-          <p>User ID: {profile.id}</p>
-          <p>Followers: {profile.followers.total}</p>
-          <a href={profile.external_urls.spotify}>Spotify Profile Link</a>
-          <Playback />
         </div>
-      ) : (
-        <div>No profile available</div>
-      )}
-    </>
+        <div className='text-left mb-6 ml-3'>
+          <h2 className="text-2xl font-semibold  mb-4">{profile.display_name}</h2>
+          <p className="text-gray-700 text-lg">Email: <span className="font-medium">{profile.email}</span></p>
+          <p className="text-gray-700 text-lg">User ID: <span className="font-medium">{profile.id}</span></p>
+          <p className="text-gray-700 text-lg">Followers: <span className="font-medium">{profile.followers.total}</span></p>
+        </div> 
+      </div>
+      <a 
+            href={profile.external_urls.spotify} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-block w-44 mt-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-300"
+          >
+            Visit Spotify Profile
+          </a>
+      <Playback />
+    </div>
+    
+  ) : (
+    <div className="text-center text-lg text-gray-600">No profile available</div>
+  )}
+</>
+
   );
 }
 

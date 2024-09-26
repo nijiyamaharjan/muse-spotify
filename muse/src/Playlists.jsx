@@ -31,22 +31,31 @@ function Playlists() {
     ) : (
         showPlaylists && playlists ? (
             <div>
-                <h2>Playlists</h2>
-                {playlists.length > 0 ? (
-                    <ol>
-                        {playlists.map(playlist => (
-                            <li key={playlist.id}>
-                                {playlist.images && playlist.images[0] && (
-                                    <img src={playlist.images[0].url} alt="Profile" width={60} />
-                                )}
-                                {playlist.name} by {playlist.owner.display_name}
-                            </li>
-                        ))}
-                    </ol>
-                ) : (
-                    <p>No playlists found.</p>
-                )}
-            </div>
+    <h1 className="text-3xl font-bold mb-6" >Public Playlists</h1>
+    {playlists.length > 0 ? (
+        <ol className="flex flex-wrap">
+            {playlists.filter(playlist => playlist.owner.display_name == 'nijiya').map(playlist => (
+                <li key={playlist.id} className="flex flex-col m-4 items-start"> {/* Added items-start for left alignment */}
+                    {playlist.images && playlist.images[0] && (
+                        <img 
+                            src={playlist.images[0].url} 
+                            alt="Playlist" 
+                            width={60} 
+                            className="w-72 h-72 object-cover" 
+                        />
+                    )}
+                    <div className="flex flex-col w-64 text-left"> {/* Added text-left for left alignment */}
+                        <span className="font-semibold mt-2">{playlist.name}</span> {/* Make the name bold */}
+                        <span className="text-gray-700">by {playlist.owner.display_name}</span> {/* Use a separate span for the owner */}
+                    </div>
+                </li>
+            ))}
+        </ol>
+    ) : (
+        <p>No playlists found.</p>
+    )}
+</div>
+
         ) : (
             <CircularProgress/>
         )

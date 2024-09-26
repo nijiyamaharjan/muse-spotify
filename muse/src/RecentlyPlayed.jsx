@@ -33,14 +33,27 @@ function RecentlyPlayed() {
             ) : (
                  recentlyPlayed.length > 0 ? (
                     <div>
-                        <h4>Recently Played Tracks</h4>
+                        <h1 className="text-3xl font-bold mb-6">Recently Played Tracks</h1>
                         <ol>
                             {recentlyPlayed.map((item, index) => (
                                 <li key={index}>
-                                        {item.track.album.images && item.track.album.images[0] && (
-                                            <img src={item.track.album.images[0].url} alt="Profile" width={60} />
-                                        )}
-                                        {item.track.name} by {item.track.artists.map(artist => artist.name).join(", ")}
+                                    <div className="flex text-justify">
+                                        <div className='box-border h-10 w-10 py-6 font-semibold'>{index+1}</div>
+                                        <div className='box-border h-20 w-20 p-2'>
+                                            {item.track.album.images && item.track.album.images[0] && (
+                                                <img src={item.track.album.images[0].url} alt="Profile" width={60} />
+                                            )}
+                                        </div>
+                                        <div className='box-border h-20 w-96 p-6 font-semibold'>
+                                            {item.track.name}
+                                        </div>
+                                        <div className='box-border h-20 w-96 p-6 text-gray-700'>
+                                            {item.track.artists.map(artist => artist.name).join(", ")}
+                                        </div>
+                                        <div className='py-7'>
+                                            <a href={item.track.external_urls.spotify}><img width={25} src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="link"/></a>
+                                        </div>
+                                    </div>
                                 </li>
                             ))}
                         </ol>

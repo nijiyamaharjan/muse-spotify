@@ -57,16 +57,18 @@ function TopArtists() {
         }
 
         return (
-            <ol>
+            <ul className="flex flex-wrap">
                 {topArtists.map((artist, index) => (
-                    <li key={index}>
-                        {artist.images && artist.images[0] && (
-                            <img src={artist.images[0].url} alt="Profile" width={60} />
-                        )}
-                        {artist.name}
-                    </li>
+                <li key={index} className="flex flex-col items-center justify-center m-4">
+                {artist.images && artist.images[0] && (
+                    <img src={artist.images[0].url} alt={artist.name} className="w-72 h-72 object-cover m-3" />
+                )}
+                <p className="text-center font-semibold">
+                    {index + 1}. {artist.name}
+                </p>
+                </li>
                 ))}
-            </ol>
+            </ul>
         );
     };
 
@@ -111,15 +113,15 @@ function TopArtists() {
           </Box>
           
           <CustomTabPanel value={value} index={0}>
-          <h1>Top Artists (Last 4 Weeks)</h1>
+          <h1 className="text-3xl font-bold mb-6">Top Artists (Last 4 Weeks)</h1>
             {renderTopArtists()}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-          <h1>Top Artists (Last 6 Months)</h1>
+          <h1 className="text-3xl font-bold mb-6">Top Artists (Last 6 Months)</h1>
             {renderTopArtists()}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-          <h1>Top Artists (Last 12 Months)</h1>
+          <h1 className="text-3xl font-bold mb-6">Top Artists (Last 12 Months)</h1>
             {renderTopArtists()}
           </CustomTabPanel>
         </Box>

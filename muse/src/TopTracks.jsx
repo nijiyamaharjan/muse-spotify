@@ -58,7 +58,6 @@ function TopTracks() {
 
         return (
             <ol>
-                
                 {topTracks.map((track, index) => (
                     <li key={index}>
                         <div className="flex text-justify">
@@ -71,8 +70,11 @@ function TopTracks() {
                             <div className='box-border h-20 w-96 p-6 font-semibold'>
                                 {track.name} 
                             </div>
-                            <div className='box-border h-20 w-96 p-6 '>
+                            <div className='box-border h-20 w-96 p-6 text-gray-700'>
                             {track.artists.map(artist => artist.name).join(", ")}
+                            </div>
+                            <div className='py-7'>
+                                <a href={track.external_urls.spotify}><img width={25} src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="link"/></a>
                             </div>
                         </div>
                     </li>
@@ -122,15 +124,15 @@ function TopTracks() {
           </Box>
           
           <CustomTabPanel value={value} index={0}>
-          <h1 className="text-3xl font-bold">Top Tracks (Last 4 Weeks)</h1>
+          <h1 className="text-3xl font-bold mb-6">Top Tracks (Last 4 Weeks)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-          <h1>Top Tracks (Last 6 Months)</h1>
+          <h1 className="text-3xl font-bold mb-6">Top Tracks (Last 6 Months)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-          <h1>Top Tracks (Last 12 Months)</h1>
+          <h1 className="text-3xl font-bold">Top Tracks (Last 12 Months)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
         </Box>

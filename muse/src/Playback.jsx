@@ -25,16 +25,55 @@ function Playback() {
 
     return (
         <>
+        <h4 className="text-xl font-bold my-4">Current Playback</h4>
             {loadingPlayback ? (
                 <p><CircularProgress /></p>
             ) : (
                 playback ? (
-                    <div>
-                        <h4>Current Playback</h4>
-                        <p>Device: {playback.device.name} ({playback.device.type})</p>
-                        <p>Title: <a href={playback.item.external_urls.spotify}>{playback.item.name}</a></p>
-                        <p>Album: <a href={playback.item.album.external_urls.spotify}>{playback.item.album.name}</a></p>
-                    </div>
+                    <div className="flex flex-row w-full max-w-md p-4 border rounded-lg shadow-md bg-white">
+  
+  <div className="flex">
+    {playback.item.album.images && playback.item.album.images[0] && (
+      <img 
+        src={playback.item.album.images[0].url} 
+        className="w-40 h-40 object-cover rounded-lg" 
+        alt="Album Cover" 
+      />
+    )}
+  </div>
+  <div className='ml-3'>
+  <p className="text-gray-700 text-lg">
+    {playback.item.name}
+  </p>
+  <p className="text-gray-700 text-lg">
+    {playback.item.artists[0].name}
+  </p>
+  <p className="text-gray-700 text-lg">
+    {playback.item.album.name}
+  </p>
+  <p className="text-gray-700 text-lg">
+    <span>Playing On: </span>{playback.device.name} ({playback.device.type})
+  </p>
+  <p className="mt-1">
+    <a 
+      href={playback.item.external_urls.spotify} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="inline-flex items-center px-3 py-2 bg-gray-800 text-white rounded hover:bg-green-700 transition duration-300"
+    >
+      <img 
+        width={25} 
+        src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" 
+        alt="link" 
+        className="mr-2 justify-center" 
+      />
+      Listen on Spotify
+    </a>
+  </p>
+  </div>
+  
+</div>
+
                 ) : (
                     <div>No active playback</div>
                 )
@@ -78,30 +117,3 @@ async function fetchPlayback(token) {
         return null;
     }
 }
-
-// async function fetchRecentlyPlayed(token) {
-//     try {
-//         const result = await fetch(`https://api.spotify.com/v1/me/player/recently-played?limit=20`, {
-//             method: "GET",
-//             headers: { Authorization: `Bearer ${token}` }
-//         });
-
-//         if (!result.ok) {
-//             throw new Error(`Recently played tracks fetch failed: ${result.statusText}`);
-//         }
-
-//         const data = await result.json();
-//         const recentlyPlayed = data.items || []; // Fallback to an empty array
-
-//         if (!recentlyPlayed.length) {
-//             console.warn("No recently played tracks found.");
-//             return [];
-//         }
-
-//         console.log("Fetched recently played:", recentlyPlayed);
-//         return recentlyPlayed;
-//     } catch (error) {
-//         console.error("Error fetching recently played:", error);
-//         return [];
-//     }
-// }
