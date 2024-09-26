@@ -56,7 +56,7 @@ function Profile() {
 
   return (
     <>
-    <h1>Muse</h1>
+    <h1 className="text-3xl font-bold underline">Muse</h1>
     {/* <Button variant="contained" onClick={handleShowProfile}>{!showProfile? 'Show Profile': 'Hide Profile'}</Button> */}
     {loading ? (
       <CircularProgress />
