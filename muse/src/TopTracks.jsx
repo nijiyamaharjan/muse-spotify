@@ -53,7 +53,7 @@ function TopTracks() {
         }
 
         if (!topTracks || topTracks.length === 0) {
-            return <p className="text-white">No top tracks available.</p>; // Change text color for dark mode
+            return <p className="text-white">No top tracks found.</p>; // Change text color for dark mode
         }
 
         return (
@@ -124,15 +124,15 @@ function TopTracks() {
           </Box>
           
           <CustomTabPanel value={value} index={0}>
-          <h1 className="text-3xl font-bold mb-6">Top Tracks (Last 4 Weeks)</h1>
+          <h1 className="text-3xl text-center font-bold mb-6">Top Tracks (Last 4 Weeks)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-          <h1 className="text-3xl font-bold mb-6">Top Tracks (Last 6 Months)</h1>
+          <h1 className="text-3xl text-center font-bold mb-6">Top Tracks (Last 6 Months)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-          <h1 className="text-3xl font-bold">Top Tracks (Last 12 Months)</h1>
+          <h1 className="text-3xl text-center font-bold">Top Tracks (Last 12 Months)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
         </Box>

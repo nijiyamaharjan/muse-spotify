@@ -59,7 +59,7 @@ function Profile() {
       <CircularProgress />
     </div>
   ) : profile ? (
-    <div className='flex flex-col text-left'>
+    <div className='flex flex-col text-left text-white'>
       <div className='flex flex-row'>
         <div>
           {profile.images && profile.images[0] && (
@@ -72,16 +72,16 @@ function Profile() {
         </div>
         <div className='text-left mb-6 ml-3'>
           <h2 className="text-2xl font-semibold  mb-4">{profile.display_name}</h2>
-          <p className="text-white text-lg">Email: <span className="font-medium">{profile.email}</span></p>
-          <p className="text-gray-700 text-lg">User ID: <span className="font-medium">{profile.id}</span></p>
-          <p className="text-gray-700 text-lg">Followers: <span className="font-medium">{profile.followers.total}</span></p>
+          <p className="text-lg">Email: <span className="font-medium">{profile.email}</span></p>
+          <p className="text-lg">User ID: <span className="font-medium">{profile.id}</span></p>
+          <p className="text-lg">Followers: <span className="font-medium">{profile.followers.total}</span></p>
         </div> 
       </div>
       <a 
             href={profile.external_urls.spotify} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="inline-block w-44 mt-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-300"
+            className="inline-block w-44 mt-1 px-4 py-2 bg-spotify-green text-white rounded hover:bg-green-700 transition duration-300"
           >
             Visit Spotify Profile
           </a>

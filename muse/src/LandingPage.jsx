@@ -39,7 +39,17 @@ function LandingPage() {
   };
 
   return (
-    <Box sx={{ width: '100%', bgcolor: '#121212', borderRadius: '8px', color: '#ffffff' }}>
+    <Box 
+      sx={{ 
+        width: '100%', 
+        height: '100vh',  // Set height to fill the viewport
+        bgcolor: '#121212', 
+        borderRadius: '8px', 
+        color: '#ffffff', 
+        display: 'flex', 
+        flexDirection: 'column' // Stack elements vertically
+      }}
+    >
       <Box sx={{ display: 'flex', justifyContent: 'space-around', borderBottom: '1px solid #333' }}>
         {['Profile', 'Top Tracks', 'Top Artists', 'Playlists', 'Recently Played'].map((label, index) => (
           <Button 
@@ -51,10 +61,10 @@ function LandingPage() {
               padding: '12px 0',
               fontWeight: value === index ? 'bold' : 'normal',
               color: value === index ? '#ffffff' : '#b0b0b0',
-              backgroundColor: value === index ? '#3e8e41' : 'transparent',
+              backgroundColor: value === index ? '#1db954' : 'transparent',
               transition: 'background-color 0.3s',
               '&:hover': {
-                backgroundColor: value === index ? '#3e8e41' : '#424242',
+                backgroundColor: value === index ? '#1db954' : '#424242',
               }
             }}
           >
@@ -63,21 +73,23 @@ function LandingPage() {
         ))}
       </Box>
       
-      <CustomTabPanel value={value} index={0}>
-        <Profile />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <TopTracks />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        <TopArtists />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
-        <Playlists />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
-        <RecentlyPlayed />
-      </CustomTabPanel>
+      <Box sx={{ flex: 1, overflowY: 'auto' }}> {/* Make this box scrollable if content overflows */}
+        <CustomTabPanel value={value} index={0}>
+          <Profile />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          <TopTracks />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          <TopArtists />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={3}>
+          <Playlists />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={4}>
+          <RecentlyPlayed />
+        </CustomTabPanel>
+      </Box>
     </Box>
   );
 }

@@ -59,7 +59,7 @@ function RecentlyPlayed() {
                         </ol>
                     </div>
                 ) : (
-                    <CircularProgress/>
+                    <p>No recently played tracks found.</p>
                 )
             )}
         </>

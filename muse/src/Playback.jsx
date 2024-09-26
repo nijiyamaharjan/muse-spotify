@@ -75,7 +75,7 @@ function Playback() {
 </div>
 
                 ) : (
-                    <div>No active playback</div>
+                    <div>No active playback found.</div>
                 )
             )}
 

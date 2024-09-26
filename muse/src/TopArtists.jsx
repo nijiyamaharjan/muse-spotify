@@ -53,7 +53,7 @@ function TopArtists() {
         }
 
         if (!topArtists || topArtists.length === 0) {
-            return <p className="text-white">No top artists available.</p>; // Change text color for dark mode
+            return <p className="text-white">No top artists found.</p>; // Change text color for dark mode
         }
 
         return (
@@ -113,15 +113,15 @@ function TopArtists() {
                 </Box>
                 
                 <CustomTabPanel value={value} index={0}>
-                    <h1 className="text-3xl font-bold mb-6">Top Artists (Last 4 Weeks)</h1>
+                    <h1 className="text-3xl text-center font-bold mb-6">Top Artists (Last 4 Weeks)</h1>
                     {renderTopArtists()}
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
-                    <h1 className="text-3xl font-bold mb-6">Top Artists (Last 6 Months)</h1>
+                    <h1 className="text-3xl text-center font-bold mb-6">Top Artists (Last 6 Months)</h1>
                     {renderTopArtists()}
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={2}>
-                    <h1 className="text-3xl font-bold mb-6">Top Artists (Last 12 Months)</h1>
+                    <h1 className="text-3xl text-center font-bold mb-6">Top Artists (Last 12 Months)</h1>
                     {renderTopArtists()}
                 </CustomTabPanel>
             </Box>
