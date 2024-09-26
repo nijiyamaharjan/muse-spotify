@@ -5,9 +5,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 function Playback() {
     const [playback, setPlayback] = useState(null);
     const [loadingPlayback, setLoadingPlayback] = useState(false);
-    // const [loadingRecentlyPlayed, setLoadingRecentlyPlayed] = useState(false);
-    // const [recentlyPlayed, setRecentlyPlayed] = useState([]); // Initialize as an empty array
-    // const [showRecentlyPlayed, setShowRecentlyPlayed] = useState(false);
     const accessToken = localStorage.getItem("access_token");
 
     const handleShowPlayback = async () => {
@@ -21,19 +18,6 @@ function Playback() {
             setLoadingPlayback(false); // End loading
         }
     };
-
-    // const handleShowRecentlyPlayed = async () => {
-    //     setLoadingRecentlyPlayed(true); // Start loading
-    //     try {
-    //         const recentlyPlayedData = await fetchRecentlyPlayed(accessToken);
-    //         setRecentlyPlayed(recentlyPlayedData);
-    //     } catch (error) {
-    //         console.error("Cannot fetch recently played", error);
-    //     } finally {
-    //         setLoadingRecentlyPlayed(false); // End loading
-    //     }
-    //     setShowRecentlyPlayed(prevState => !prevState);
-    // };
 
     useEffect(() => {
         handleShowPlayback();
@@ -56,28 +40,7 @@ function Playback() {
                 )
             )}
 
-            {/* <Button variant="contained" onClick={() => handleShowRecentlyPlayed()}>
-                {showRecentlyPlayed ? 'Hide Recently Played' : 'Show Recently Played'}
-            </Button>
-
-            {loadingRecentlyPlayed ? (
-                <p><CircularProgress /></p>
-            ) : (
-                showRecentlyPlayed && recentlyPlayed.length > 0 ? (
-                    <div>
-                        <h4>Recently Played Tracks</h4>
-                        <ol>
-                            {recentlyPlayed.map((item, index) => (
-                                <li key={index}>
-                                    {item.track.name} by {item.track.artists.map(artist => artist.name).join(", ")}
-                                </li>
-                            ))}
-                        </ol>
-                    </div>
-                ) : (
-                    <div>Recently played tracks hidden</div>
-                )
-            )} */}
+           
         </>
     );
 }
@@ -90,15 +53,21 @@ async function fetchPlayback(token) {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` }
         });
-
+        
         if (!result.ok) {
             throw new Error(`Playback fetch failed: ${result.statusText}`);
         }
 
-        const playback = await result.json();
+        const text = await result.text();  // Get the response as text
+        if (!text) {
+            console.log("No content returned from the API.");
+            return null;
+        }
+
+        const playback = JSON.parse(text);
 
         if (!playback) {
-            console.warn("No active playback found.");
+            console.log("No active playback found.");
             return null;
         }
 
