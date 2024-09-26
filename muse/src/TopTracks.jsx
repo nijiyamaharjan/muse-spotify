@@ -61,10 +61,20 @@ function TopTracks() {
                 
                 {topTracks.map((track, index) => (
                     <li key={index}>
-                        {track.album.images && track.album.images[0] && (
-                            <img src={track.album.images[0].url} alt="Profile" width={60} />
-                        )}
-                        {track.name} by {track.artists.map(artist => artist.name).join(", ")}
+                        <div className="flex text-justify">
+                            <div className='box-border h-10 w-10 py-6 font-semibold'>{index+1}</div>
+                            <div className='box-border h-20 w-20 p-2'> 
+                            {track.album.images && track.album.images[0] && (
+                                <img src={track.album.images[0].url} alt="Profile" width={60} />
+                            )}
+                            </div>
+                            <div className='box-border h-20 w-96 p-6 font-semibold'>
+                                {track.name} 
+                            </div>
+                            <div className='box-border h-20 w-96 p-6 '>
+                            {track.artists.map(artist => artist.name).join(", ")}
+                            </div>
+                        </div>
                     </li>
                 ))}
             </ol>
@@ -112,7 +122,7 @@ function TopTracks() {
           </Box>
           
           <CustomTabPanel value={value} index={0}>
-          <h1>Top Tracks (Last 4 Weeks)</h1>
+          <h1 className="text-3xl font-bold">Top Tracks (Last 4 Weeks)</h1>
             {renderTopTracks()}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
