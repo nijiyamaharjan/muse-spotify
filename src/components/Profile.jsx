@@ -5,6 +5,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
 
+const REDIRECT_URI = process.env.NODE_ENV === 'production' 
+  ? 'https://muse-for-spotify.vercel.app/callback'  // Replace with your actual Vercel domain
+  : 'http://localhost:5173/callback';
+
 function Profile() {
   const [profile, setProfile] = useState(null);
   const [access, setAccess] = useState(null);
@@ -122,7 +126,7 @@ async function redirectToAuthCodeFlow(clientId) {
   const params = new URLSearchParams();
   params.append("client_id", clientId);
   params.append("response_type", "code");
-  params.append("redirect_uri", "https://muse-for-spotify.vercel.app/callback");
+  params.append("redirect_uri", REDIRECT_URI);
   params.append("scope", "user-read-private user-read-email user-top-read playlist-read-private playlist-read-collaborative user-read-playback-state user-read-recently-played");
   params.append("code_challenge_method", "S256");
   params.append("code_challenge", challenge);
@@ -156,7 +160,7 @@ async function getAccessToken(clientId, code) {
   params.append("client_id", clientId);
   params.append("grant_type", "authorization_code");
   params.append("code", code);
-  params.append("redirect_uri", "https://muse-for-spotify.vercel.app/callback");
+  params.append("redirect_uri", REDIRECT_URI);
   params.append("code_verifier", verifier);
 
   try {
