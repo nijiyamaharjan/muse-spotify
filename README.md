@@ -29,17 +29,3 @@ Here are some screenshots showcasing the app’s UI:
 ### Recently Played:
 ![Recently Played](./screenshots/5.png)
 
-(Upload your screenshots to the `assets` folder and reference them above.)
-
-## Prerequisites
-Before using **Muse for Spotify**, ensure you have the following:
-- A Spotify Developer account.
-- A Spotify API client ID and secret.
-- A valid access token for authenticating users.
-
-## Installation
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/muse-for-spotify.git
