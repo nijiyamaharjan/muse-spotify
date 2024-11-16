@@ -9,7 +9,7 @@ import Playlists from './Playlists';
 import RecentlyPlayed from './RecentlyPlayed';
 
 function LandingPage() {
-  
+
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -47,10 +47,10 @@ function LandingPage() {
         borderRadius: '8px', 
         color: '#ffffff', 
         display: 'flex', 
-        flexDirection: 'column' // Stack elements vertically
+        flexDirection: 'column', // Stack elements vertically
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-around', borderBottom: '1px solid #333' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-around', borderBottom: '1px solid #333', padding: '10px' }}>
         {['Profile', 'Top Tracks', 'Top Artists', 'Playlists', 'Recently Played'].map((label, index) => (
           <Button 
             key={index}
@@ -58,7 +58,8 @@ function LandingPage() {
             onClick={() => handleButtonClick(index)} 
             sx={{
               flexGrow: 1,
-              padding: '12px 0',
+              padding: '10px 0',  // Adjust padding for larger buttons
+              fontSize: '12px',  // Increase font size
               fontWeight: value === index ? 'bold' : 'normal',
               color: value === index ? '#ffffff' : '#b0b0b0',
               backgroundColor: value === index ? '#1db954' : 'transparent',

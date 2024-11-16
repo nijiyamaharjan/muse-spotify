@@ -6,97 +6,110 @@ import CircularProgress from '@mui/material/CircularProgress';
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
 
 function Profile() {
-  //redirectToAuthCodeFlow(clientId);
   const [profile, setProfile] = useState(null);
   const [access, setAccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleShowProfile = async () => {
-    //localStorage.clear();
+  useEffect(() => {
+    const accessToken = localStorage.getItem("access_token");
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    let accessToken = localStorage.getItem("access_token");
 
+    // Check if there's an access token or code
     if (!accessToken && !code) {
-      redirectToAuthCodeFlow(clientId); // No token or code, redirect to authorize
+      // No token or code, redirect to auth flow once
+      redirectToAuthCodeFlow(clientId);
     } else if (code && !accessToken) {
       // If we have a code, exchange it for an access token
-      try {
-        accessToken = await getAccessToken(clientId, code);
-        const profile = await fetchProfile(accessToken);
-        setProfile(profile);
-
-        // Clean up URL after successful exchange
-        window.history.replaceState({}, document.title, "/");
-      } catch (error) {
-        console.error("Authorization error:", error);
-        localStorage.removeItem("access_token");
-        redirectToAuthCodeFlow(clientId); // Restart auth flow
-      }
+      handleAuthCodeFlow(code);
     } else if (accessToken) {
-      setLoading(true);
-      // If token exists, use it to fetch profile
-      try {
-        const profile = await fetchProfile(accessToken);
-        setProfile(profile);
-      } catch (error) {
-        console.error("Token expired or invalid:", error);
-        localStorage.removeItem("access_token");
-        redirectToAuthCodeFlow(clientId); // Restart auth flow
-      } finally {
-        setLoading(false);  // End loading
-      }
+      // If we have a token, fetch the profile
+      fetchProfileData(accessToken);
+    }
+  }, []);
+
+  const handleAuthCodeFlow = async (code) => {
+    try {
+      const accessToken = await getAccessToken(clientId, code);
+      const profile = await fetchProfile(accessToken);
+      setProfile(profile);
+
+      // Clean up URL after successful exchange
+      window.history.replaceState({}, document.title, "/");
+    } catch (error) {
+      console.error("Authorization error:", error);
     }
   };
 
-  useEffect(() => {
-    handleShowProfile();
-  }, []);
+  const fetchProfileData = async (accessToken) => {
+    setLoading(true);
+    try {
+      const profile = await fetchProfile(accessToken);
+      setProfile(profile);
+    } catch (error) {
+      console.error("Token expired or invalid:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_id");
+
+    window.location.href = "/";
+  };
 
   return (
     <>
-  {loading ? (
-    <div className="flex">
-      <CircularProgress />
-    </div>
-  ) : profile ? (
-    <div className='flex flex-col text-left items-center text-white'>
-      <div className='flex flex-row'>
-        <div>
-          {profile.images && profile.images[0] && (
-            <img 
-              src={profile.images[0].url} 
-              alt="Profile" 
-              className="w-32 h-32 object-cover rounded-full mx-auto mb-4" 
-            />
-          )}
+      {loading ? (
+        <div className="flex">
+          <CircularProgress />
         </div>
-        <div className='text-left mb-6 ml-3'>
+      ) : profile ? (
+        <div className='flex flex-col text-left items-center text-white'>
           <div className='flex flex-row'>
-            <h2 className="text-2xl font-semibold  mb-4">{profile.display_name} </h2> 
-            <a 
-              href={profile.external_urls.spotify} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="mt-1.5 h-7 ml-4"
-            >
-              <img width={25} src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="link" />
-            </a>
+            <div>
+              {profile.images && profile.images[0] && (
+                <img 
+                  src={profile.images[0].url} 
+                  alt="Profile" 
+                  className="w-32 h-32 object-cover rounded-full mx-auto mb-4" 
+                />
+              )}
+            </div>
+            <div className='text-left mb-6 ml-3'>
+              <div className='flex flex-row'>
+                <h2 className="text-2xl font-semibold  mb-4">{profile.display_name} </h2> 
+                <a 
+                  href={profile.external_urls.spotify} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="mt-1.5 h-7 ml-4"
+                >
+                  <img width={25} src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png" alt="link" />
+                </a>
+              </div>
+              <p className="text-lg">Email: <span className="font-medium">{profile.email}</span></p>
+              <p className="text-lg">User ID: <span className="font-medium">{profile.id}</span></p>
+              <p className="text-lg">Followers: <span className="font-medium">{profile.followers.total}</span></p>
+            </div> 
           </div>
-          <p className="text-lg">Email: <span className="font-medium">{profile.email}</span></p>
-          <p className="text-lg">User ID: <span className="font-medium">{profile.id}</span></p>
-          <p className="text-lg">Followers: <span className="font-medium">{profile.followers.total}</span></p>
-        </div> 
-      </div>
-      
-      <Playback />
-    </div>
-    
-  ) : (
-    <div className="text-center text-lg text-gray-600">No profile available</div>
-  )}
-</>
-
+          
+          <Playback/>
+           {/* Logout Button */}
+           <Button
+              variant="contained"
+              sx={{ backgroundColor: '#1db954', color: 'white' }}
+              onClick={handleLogout}
+           >
+              <p className='font-medium'>Log Out</p>
+           </Button>
+        </div>
+      ) : (
+        <div className="text-center text-lg text-gray-600">No profile available</div>
+      )}
+    </>
   );
 }
 
@@ -153,31 +166,23 @@ async function getAccessToken(clientId, code) {
       body: params
     });
 
-    console.log("Token Request Response:", result);
-
     if (!result.ok) {
-      console.error(`Error during token exchange: ${result.statusText}`);
       throw new Error(`Token request failed: ${result.statusText}`);
     }
 
     const responseBody = await result.json();
-    console.log("Token Response Body:", responseBody);
-
     const { access_token } = responseBody;
     if (!access_token) {
       throw new Error("No access token received from Spotify.");
     }
 
-    // Store and return access token
     localStorage.setItem("access_token", access_token);
-    console.log("Access token stored successfully.");
     return access_token;
   } catch (error) {
     console.error("Error fetching access token:", error);
     throw error;
   }
 }
-
 
 async function fetchProfile(token) {
   try {
@@ -192,7 +197,6 @@ async function fetchProfile(token) {
 
     const profile = await result.json();
     localStorage.setItem("user_id", profile.id);
-    console.log("Fetched profile:", profile);
     return profile;
   } catch (error) {
     console.error("Error fetching profile:", error);
