@@ -6,7 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 const clientId = import.meta.env.VITE_REACT_APP_CLIENT_ID;
 
 const REDIRECT_URI = process.env.NODE_ENV === 'production' 
-  ? 'https://muse-for-spotify.vercel.app/callback'  // Replace with your actual Vercel domain
+  ? 'https://muse-for-spotify.vercel.app/callback' 
   : 'http://localhost:5173/callback';
 
 function Profile() {
@@ -18,6 +18,11 @@ function Profile() {
     const accessToken = localStorage.getItem("access_token");
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
+
+    if (!sessionStorage.getItem("tokenCleared")) {
+      localStorage.removeItem("access_token");
+      sessionStorage.setItem("tokenCleared", "true");
+    }
 
     // Check if there's an access token or code
     if (!accessToken && !code) {
